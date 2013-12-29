@@ -18,8 +18,18 @@ use Flysystem\Adapter\Ftp as Adapter;
 
 class FtpDestination implements DestinationInterface
 {
+    /**
+     * Filesystem object
+     *
+     * @var Filesystem
+     */
     protected $ftp;
-    protected $connection;
+
+    /**
+     * Connection options
+     *
+     * @var array
+     */
     protected $options = array();
 
     public function __construct(array $options = array())
@@ -46,6 +56,11 @@ class FtpDestination implements DestinationInterface
         $this->ftp = $ftp;
     }
 
+    /**
+     * Set default connection options
+     *
+     * @param OptionsResolverInterface $resolver
+     */
     protected function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setRequired(array('username', 'password', 'host', 'root', 'path'));
@@ -79,6 +94,9 @@ class FtpDestination implements DestinationInterface
         ));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function put(array $files)
     {
         foreach ($files as $file) {

@@ -171,6 +171,7 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
      */
     public function backup()
     {
+        // Get all databases if none or only excludes defined
         if (empty(array_filter($this->databases))) {
             if ($this->type == 'mysql') {
                 $pdo = new \PDO('mysql:host=' . $this->options['host'] . ';', $this->options['username'], $this->options['password']);
@@ -187,6 +188,7 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
 
         $result = array();
 
+        // Dump databases
         foreach ($this->databases as $name => $settings) {
             if ($settings === false) {
                 continue;

@@ -12,5 +12,10 @@ namespace Indigo\Backup\Source;
 
 interface SourceInterface
 {
+    /**
+     * Run backup
+     *
+     * @return array List of files to backup
+     */
     public function backup();
 }

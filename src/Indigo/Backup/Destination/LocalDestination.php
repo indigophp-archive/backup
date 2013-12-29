@@ -12,6 +12,10 @@ namespace Indigo\Backup\Destination;
 
 class LocalDestination implements DestinationInterface
 {
+    /**
+     * Base destination path
+     * @var string
+     */
     protected $path;
 
     public function __construct($path, $create = false)
@@ -28,6 +32,9 @@ class LocalDestination implements DestinationInterface
         $this->path = $path;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function put(array $files)
     {
         foreach ($files as $file) {
