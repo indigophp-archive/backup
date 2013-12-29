@@ -181,7 +181,9 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
     public function backup()
     {
         // PHP <5.4.0 compliance
-        $databases = array_filter($this->databases);
+        $databases = array_filter($this->databases, function($var) {
+            return $var !== false;
+        });
 
         // Get all databases if none or only excludes defined
         if (empty($databases)) {
