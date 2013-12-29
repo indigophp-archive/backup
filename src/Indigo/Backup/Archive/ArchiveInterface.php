@@ -12,7 +12,7 @@ namespace Indigo\Backup\Archive;
 
 interface ArchiveInterface
 {
-	public function compress();
+    public function compress();
 
-	public function decompress();
+    public function decompress();
 }

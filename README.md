@@ -21,5 +21,10 @@ use Indigo\Backup\Source\DatabaseSource;
 use Indigo\Backup\Destination\LocalDestination;
 use Indigo\Backup\Destination\FtpDestination;
 
-$source = new DatabaseSource();
+$source = new DatabaseSource(array(
+	'host'     => 'localhost',
+	'username' => 'root',
+	'password' => 'secret',
+	'type'     => 'mysql',
+));
 ```

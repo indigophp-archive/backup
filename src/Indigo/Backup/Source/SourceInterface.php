@@ -12,5 +12,5 @@ namespace Indigo\Backup\Source;
 
 interface SourceInterface
 {
-	public function backup();
+    public function backup();
 }
