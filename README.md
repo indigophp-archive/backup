@@ -55,6 +55,6 @@ $backup->run();
 Todo
 ----
 
-* SFTP Destionation
+* SFTP Destination
 * Unit tests
 * Reviewing current backup implementation
