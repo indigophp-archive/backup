@@ -2,6 +2,7 @@
     "name": "indigophp/backup",
     "description": "Backup package for different types of backups (eg. database, file, etc)",
     "license": "MIT",
+    "keywords": ["backup"],
     "authors": [
         {
             "name": "Márk Sági-Kazár",
@@ -9,11 +10,15 @@
         }
     ],
     "require": {
-        "symfony/options-resolver": "v2.4.0",
-        "frenkynet/flysystem": "dev-master"
+        "symfony/options-resolver": "v2.4.0"
     },
     "require-dev": {
-        "clouddueling/mysqldump-php": "1.0.0"
+        "clouddueling/mysqldump-php": "1.0.0",
+        "frenkynet/flysystem": "dev-master"
+    },
+    "suggest": {
+        "clouddueling/mysqldump-php": "PHP MySQL Dump implementation",
+        "frenkynet/flysystem": "Filesystem abstraction layer used for file uploads"
     },
     "autoload": {
         "psr-0": {"Indigo\\Backup": "src/"}

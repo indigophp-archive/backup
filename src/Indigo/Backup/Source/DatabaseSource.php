@@ -1,4 +1,12 @@
 <?php
+/*
+ * This file is part of the Indigo Backup package.
+ *
+ * (c) IndigoPHP Development Team
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Indigo\Backup\Source;
 
@@ -7,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\Options;
 
-class DatabaseSource implements SourceInterface, CleanupSourceInterface
+class DatabaseSource implements SourceInterface, CleanSourceInterface
 {
     protected $user;
     protected $pass;

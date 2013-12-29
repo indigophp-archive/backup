@@ -2,7 +2,7 @@
 
 namespace Indigo\Backup\Source;
 
-interface CleanupSourceInterface
+interface CleanSourceInterface
 {
 	public function cleanup();
 }
