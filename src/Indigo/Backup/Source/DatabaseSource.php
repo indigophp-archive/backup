@@ -99,18 +99,18 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
      */
     protected function setDefaultSettings(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'include-tables'             => array(),
-            'exclude-tables'             => array(),
-            'compress'                   => 'None',
-            'no-data'                    => false,
-            'add-drop-database'          => false,
-            'add-drop-table'             => false,
-            'single-transaction'         => true,
-            'lock-tables'                => false,
-            'add-locks'                  => true,
-            'extended-insert'            => true,
-            'disable-foreign-keys-check' => false,
+        $resolver->setOptional(array(
+            'include-tables',
+            'exclude-tables',
+            'compress',
+            'no-data',
+            'add-drop-database',
+            'add-drop-table',
+            'single-transaction',
+            'lock-tables',
+            'add-locks',
+            'extended-insert',
+            'disable-foreign-keys-check',
         ));
 
         $resolver->setAllowedValues(array(
