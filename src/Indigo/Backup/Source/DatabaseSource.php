@@ -55,7 +55,7 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
         mkdir($this->options['tmp'], 0777, true);
 
         $resolver = new OptionsResolver();
-        $this->setDefaultSettings($resolver);
+        $this->setDefaultSettings($resolver, true);
         $this->settings = $resolver->resolve($settings);
     }
 
@@ -96,22 +96,39 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
      * Set default dump settings
      *
      * @param OptionsResolverInterface $resolver
+     * @param boolean                  $global
      */
-    protected function setDefaultSettings(OptionsResolverInterface $resolver)
+    protected function setDefaultSettings(OptionsResolverInterface $resolver, $global = false)
     {
-        $resolver->setOptional(array(
-            'include-tables',
-            'exclude-tables',
-            'compress',
-            'no-data',
-            'add-drop-database',
-            'add-drop-table',
-            'single-transaction',
-            'lock-tables',
-            'add-locks',
-            'extended-insert',
-            'disable-foreign-keys-check',
-        ));
+        if ($global) {
+            $resolver->setDefaults(array(
+                'include-tables'             => array(),
+                'exclude-tables'             => array(),
+                'compress'                   => 'None',
+                'no-data'                    => false,
+                'add-drop-database'          => false,
+                'add-drop-table'             => false,
+                'single-transaction'         => true,
+                'lock-tables'                => false,
+                'add-locks'                  => true,
+                'extended-insert'            => true,
+                'disable-foreign-keys-check' => false,
+            ));
+        } else {
+            $resolver->setOptional(array(
+                'include-tables',
+                'exclude-tables',
+                'compress',
+                'no-data',
+                'add-drop-database',
+                'add-drop-table',
+                'single-transaction',
+                'lock-tables',
+                'add-locks',
+                'extended-insert',
+                'disable-foreign-keys-check',
+            ));
+        }
 
         $resolver->setAllowedValues(array(
             'compress' => array('NONE', 'GZIP', 'BZIP2'),
