@@ -10,7 +10,7 @@
     ],
     "require": {
         "symfony/options-resolver": "v2.4.0",
-        "touki/ftp": "v1.1.1"
+        "frenkynet/flysystem": "dev-master"
     },
     "require-dev": {
         "clouddueling/mysqldump-php": "1.0.0"
