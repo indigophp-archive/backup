@@ -13,6 +13,7 @@ Current supported destinations:
 
 Usage
 -----
+
 ```php
 <?php
 
@@ -21,10 +22,39 @@ use Indigo\Backup\Source\DatabaseSource;
 use Indigo\Backup\Destination\LocalDestination;
 use Indigo\Backup\Destination\FtpDestination;
 
+// See other settings at https://github.com/clouddueling/mysqldump-php
 $source = new DatabaseSource(array(
 	'host'     => 'localhost',
 	'username' => 'root',
 	'password' => 'secret',
 	'type'     => 'mysql',
+), array(
+	'compress' => 'GZIP',
 ));
+
+// Create directory if not exists
+$destination = new LocalDestination('/tmp/databases', true);
+
+$backup = new Backup($source, $destination);
+
+$destination = new FtpDestination(array(
+	'host' => 'localhost',
+	'username' => 'root',
+	'password' => 'secret',
+	'port' => 21,
+	'root' => '/home/backup',
+	'path' => date('YmdHis')
+));
+
+$backup->pushDestination($destination);
+
+$backup->run();
+
 ```
+
+Todo
+----
+
+* SFTP Destionation
+* Unit tests
+* Reviewing current backup implementation
