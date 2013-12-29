@@ -173,7 +173,7 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
     {
         // Get all databases if none or only excludes defined
         if (empty(array_filter($this->databases))) {
-            if ($this->type == 'mysql') {
+            if ($this->options['type'] == 'mysql') {
                 $pdo = new \PDO('mysql:host=' . $this->options['host'] . ';', $this->options['username'], $this->options['password']);
 
                 foreach ($pdo->query('SHOW DATABASES') as $db) {
