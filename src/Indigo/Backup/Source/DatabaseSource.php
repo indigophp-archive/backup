@@ -147,10 +147,14 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
      */
     public function includeDatabase($db, array $settings = array())
     {
+        is_array($db) or $db = array($db => $settings);
         $resolver = new OptionsResolver();
         $this->setDefaultSettings($resolver);
 
-        $this->databases[$db] = $resolver->resolve($settings);
+        foreach ($db as $d => $settings) {
+            $this->databases[$d] = $resolver->resolve($settings);
+        }
+
         return $this;
     }
 
@@ -162,7 +166,12 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
      */
     public function excludeDatabase($db)
     {
-        $this->databases[$db] = false;
+        is_array($db) or $db = array($db);
+
+        foreach ($db as $d) {
+            $this->databases[$d] = false;
+        }
+
         return $this;
     }
 
