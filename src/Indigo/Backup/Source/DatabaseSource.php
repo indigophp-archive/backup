@@ -180,8 +180,11 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
      */
     public function backup()
     {
+        // PHP <5.4.0 compliance
+        $databases = array_filter($this->databases);
+
         // Get all databases if none or only excludes defined
-        if (empty(array_filter($this->databases))) {
+        if (empty($databases)) {
             if ($this->options['type'] == 'mysql') {
                 $pdo = new \PDO('mysql:host=' . $this->options['host'] . ';', $this->options['username'], $this->options['password']);
 
