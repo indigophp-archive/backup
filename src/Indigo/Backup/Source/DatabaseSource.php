@@ -156,10 +156,16 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
     public function includeDatabase($db, array $settings = array())
     {
         is_array($db) or $db = array($db => $settings);
+
         $resolver = new OptionsResolver();
         $this->setDefaultSettings($resolver);
 
         foreach ($db as $d => $settings) {
+            if (is_int($d)) {
+                $d = $settings;
+                $settings = array();
+            }
+
             $this->databases[$d] = $resolver->resolve($settings);
         }
 
