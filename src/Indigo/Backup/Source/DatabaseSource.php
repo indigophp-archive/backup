@@ -175,7 +175,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
     /**
      * Add excluded database
      *
-     * @param  string         $db       Database name
+     * @param  string         $db Database name
      * @return DatabaseSource
      */
     public function excludeDatabase($db)
@@ -195,7 +195,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
     public function backup()
     {
         // PHP <5.4.0 compliance
-        $databases = array_filter($this->databases, function($var) {
+        $databases = array_filter($this->databases, function ($var) {
             return $var !== false;
         });
 
