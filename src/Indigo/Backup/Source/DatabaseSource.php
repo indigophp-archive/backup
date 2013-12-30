@@ -195,6 +195,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
 
         // Get all databases if none or only excludes defined
         if (empty($databases)) {
+            $this->logger->debug('No database included, backing up all');
             if ($this->options['type'] == 'mysql') {
                 $pdo = new \PDO('mysql:host=' . $this->options['host'] . ';', $this->options['username'], $this->options['password']);
 
@@ -204,6 +205,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
                     }
                 }
             } else {
+                $this->logger->error('Backing up all databases is not yet implemented in the given DB type: ' . $this->options['type']);
                 throw new \Exception('Backing up all databases is not yet implemented in the given DB type: ' . $this->options['type']);
             }
         }
@@ -213,9 +215,11 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
         // Dump databases
         foreach ($this->databases as $name => $settings) {
             if ($settings === false) {
+                $this->logger->debug('Skipping database: ' . $name, compact('name'));
                 continue;
             }
 
+            $this->logger->debug('Backing up database: ' . $name, compact('name', 'settings'));
             $dump = new Mysqldump($name, $this->options['username'], $this->options['password'], $this->options['host'], $this->options['type'], $settings);
 
             $path = $this->options['tmp'] . "$name.sql";
