@@ -16,7 +16,7 @@ use Flysystem\Adapter\Local as Adapter;
 class LocalDestination extends AbstractDestination
 {
     /**
-     * Base destination path
+     * Destination filesystem
      *
      * @var string
      */

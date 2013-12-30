@@ -15,6 +15,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Psr\Log\NullLogger;
+use Flysystem\Filesystem;
+use Flysystem\Adapter\Local as Adapter;
 
 class DatabaseSource extends AbstractSource implements CleanSourceInterface
 {
@@ -46,14 +48,20 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
      */
     protected $result = array();
 
+    /**
+     * Temporary filesystem
+     *
+     * @var string
+     */
+    protected $tmp;
+
     public function __construct(array $options, array $settings = array())
     {
         $resolver = new OptionsResolver();
         $this->setDefaultOptions($resolver);
         $this->options = $resolver->resolve($options);
 
-        // Create temporary directory
-        mkdir($this->options['tmp'], 0777, true);
+        $this->tmp = new Filesystem(new Adapter($this->options['tmp']));
 
         $resolver = new OptionsResolver();
         $this->setDefaultSettings($resolver, true);
@@ -247,7 +255,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
 
             $path = $this->options['tmp'] . $name . '.sql';
             $dump->start($path);
-            $result[] = $path . $this->getExt();
+            $result[] = $path . $this->getExt($settings);
         }
 
         return $this->result = $result;
@@ -258,12 +266,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
      */
     public function cleanup()
     {
-        foreach ($this->result as $file) {
-            unlink($file);
-        }
-
-        // Remove temp directory if empty
-        @rmdir($this->options['tmp']);
+        $this->tmp->deleteDir('');
     }
 
     /**
@@ -271,9 +274,9 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
      *
      * @return string
      */
-    private function getExt()
+    private function getExt(array $settings)
     {
-        switch ($this->settings['compress']) {
+        switch ($settings['compress']) {
             case 'GZIP':
                 return '.gz';
                 break;
