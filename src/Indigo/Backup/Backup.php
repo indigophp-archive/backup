@@ -103,14 +103,21 @@ class Backup implements LoggerAwareInterface
             $destination->put($files);
         }
 
-        // Cleaning up
+        $this->cleanUp();
+
+        $this->logger->info('Backup finished succesfully');
+    }
+
+    /**
+     * Clean up junk data
+     */
+    private function cleanUp()
+    {
         foreach ($this->sources as $source) {
             if ($source instanceof CleanSourceInterface) {
                 $source->cleanup();
             }
         }
-
-        $this->logger->info('Backup finished succesfully');
     }
 
     /**
