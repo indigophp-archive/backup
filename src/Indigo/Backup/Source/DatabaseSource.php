@@ -86,7 +86,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
         ));
 
         $resolver->setAllowedValues(array(
-            'type' => array('mysql', 'pgsql', 'sqlite'),
+            'type' => array('mysql', 'pgsql', 'dblib'),
         ));
 
         $resolver->setAllowedTypes(array(
@@ -210,27 +210,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
         // (This only works with SUPER access)
         if (empty($databases)) {
             $this->logger->debug('No database included, backing up all');
-            if ($this->options['type'] == 'mysql') {
-                $pdo = new \PDO(
-                    'mysql:host=' . $this->options['host'] . ';',
-                    $this->options['username'],
-                    $this->options['password']
-                );
-
-                foreach ($pdo->query('SHOW DATABASES') as $db) {
-                    $db = $db['Database'];
-
-                    if (array_key_exists($db, $this->databases)) {
-                        continue;
-                    }
-
-                    $this->includeDatabase($db);
-                }
-            } else {
-                $m = 'Backing up all databases is not yet implemented in the given DB type: ' . $this->options['type'];
-                $this->logger->error($m);
-                throw new \Exception($m);
-            }
+            $this->getDatabases();
         }
 
         $result = array();
@@ -283,6 +263,36 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * Fetch databases from DB
+     *
+     * This only works with SUPER access on MySQL
+     */
+    private function getDatabases()
+    {
+        if ($this->options['type'] == 'mysql') {
+            $pdo = new \PDO(
+                'mysql:host=' . $this->options['host'] . ';',
+                $this->options['username'],
+                $this->options['password']
+            );
+
+            foreach ($pdo->query('SHOW DATABASES') as $db) {
+                $db = $db['Database'];
+
+                if (array_key_exists($db, $this->databases)) {
+                    continue;
+                }
+
+                $this->includeDatabase($db);
+            }
+        } else {
+            $msg = 'Backing up all databases is not yet implemented in the given DB type: ' . $this->options['type'];
+            $this->logger->error($msg);
+            throw new \Exception($msg);
         }
     }
 }
