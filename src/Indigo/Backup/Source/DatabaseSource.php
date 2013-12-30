@@ -89,7 +89,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
         ));
 
         $resolver->setNormalizers(array(
-            'tmp' => function (Options $options, $value) {
+            'tmp' => function ($value) {
                 return rtrim($value) . '/';
             },
         ));
@@ -140,7 +140,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
         ));
 
         $resolver->setNormalizers(array(
-            'compress' => function (Options $options, $value) {
+            'compress' => function ($value) {
                 return strtoupper($value);
             },
         ));
