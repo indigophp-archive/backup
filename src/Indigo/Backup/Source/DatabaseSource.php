@@ -115,19 +115,7 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
                 'disable-foreign-keys-check' => false,
             ));
         } else {
-            $resolver->setOptional(array(
-                'include-tables',
-                'exclude-tables',
-                'compress',
-                'no-data',
-                'add-drop-database',
-                'add-drop-table',
-                'single-transaction',
-                'lock-tables',
-                'add-locks',
-                'extended-insert',
-                'disable-foreign-keys-check',
-            ));
+            $resolver->setDefaults($this->settings);
         }
 
         $resolver->setAllowedValues(array(
@@ -225,7 +213,6 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
                 continue;
             }
 
-            $settings = array_merge($this->settings, $settings);
             $dump = new Mysqldump($name, $this->options['username'], $this->options['password'], $this->options['host'], $this->options['type'], $settings);
 
             $path = $this->options['tmp'] . "$name.sql";
