@@ -1,6 +1,8 @@
 Indigo Backup
 =============
 
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/indigophp/backup/badges/quality-score.png?s=2cf8773e5649fb85fbd3d21e05f77446cd7c0efe)](https://scrutinizer-ci.com/g/indigophp/backup/)
+
 Create backup from any source (files, databases, stream output, etc) and store at any destination.
 
 Current supported sources:
