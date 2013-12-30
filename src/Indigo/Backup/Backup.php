@@ -13,21 +13,48 @@ namespace Indigo\Backup;
 use Indigo\Backup\Source\SourceInterface;
 use Indigo\Backup\Source\CleanSourceInterface;
 use Indigo\Backup\Destination\DestinationInterface;
-use Indigo\Backup\Archive\ArchiveInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
-class Backup
+class Backup implements LoggerAwareInterface
 {
+    /**
+     * Array of SourceInterface objects
+     *
+     * @var array
+     */
     protected $sources = array();
-    protected $archives = array();
+
+    /**
+     * Array of DestinationInterface objects
+     *
+     * @var array
+     */
     protected $destinations = array();
 
-    public function __construct(SourceInterface $source, DestinationInterface $destination, ArchiveInterface $archive = null)
+    /**
+     * Logger instance
+     *
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    public function __construct(SourceInterface $source, DestinationInterface $destination)
     {
         $this->sources[] = $source;
-        $this->archives[] = $archive;
         $this->destinations[] = $destination;
+
+        $this->logger = new NullLogger;
     }
 
+    /**
+     * Push a new SourceInterface
+     *
+     * @param  SourceInterface $source
+     * @param  boolean         $prepend Add the source to the beginning of the list
+     * @return Backup
+     */
     public function pushSource(SourceInterface $source, $prepend = false)
     {
         if ($prepend) {
@@ -39,6 +66,13 @@ class Backup
         return $this;
     }
 
+    /**
+     * Push a new DestinationInterface
+     *
+     * @param  DestinationInterface $destination
+     * @param  boolean              $prepend     Add the destiantion to the beginning of the list
+     * @return Backup
+     */
     public function pushDestination(DestinationInterface $destination, $prepend = false)
     {
         if ($prepend) {
@@ -50,22 +84,42 @@ class Backup
         return $this;
     }
 
+    /**
+     * Run backup
+     */
     public function run()
     {
+        $this->logger->debug('Backup started');
+
         $files = array();
 
+        // Get files from sources
         foreach ($this->sources as $source) {
             $files = array_merge($files, $source->backup());
         }
 
+        // Send data to destinations
         foreach ($this->destinations as $destination) {
             $destination->put($files);
         }
 
+        // Cleaning up
         foreach ($this->sources as $source) {
             if ($source instanceof CleanSourceInterface) {
                 $source->cleanup();
             }
         }
+
+        $this->logger->info('Backup finished succesfully');
+    }
+
+    /**
+     * Sets a logger instance on the object
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 }
