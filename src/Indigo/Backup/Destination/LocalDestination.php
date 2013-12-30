@@ -21,7 +21,7 @@ class LocalDestination extends AbstractDestination
     public function __construct($path, $create = false)
     {
         $path = rtrim($path) . '/';
-        if ( ! is_dir($path) or ! is_writeable($path)) {
+        if (!is_dir($path) or !is_writeable($path)) {
             if ($create) {
                 mkdir($path, 0777, true);
             } else {
