@@ -10,7 +10,7 @@
 
 namespace Indigo\Backup\Destination;
 
-class LocalDestination implements DestinationInterface
+class LocalDestination extends AbstractDestination
 {
     /**
      * Base destination path

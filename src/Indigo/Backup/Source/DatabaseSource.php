@@ -14,8 +14,9 @@ use Clouddueling\Mysqldump\Mysqldump;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\Options;
+use Psr\Log\NullLogger;
 
-class DatabaseSource implements SourceInterface, CleanSourceInterface
+class DatabaseSource extends AbstractSource implements CleanSourceInterface
 {
     /**
      * Connection options
@@ -57,6 +58,8 @@ class DatabaseSource implements SourceInterface, CleanSourceInterface
         $resolver = new OptionsResolver();
         $this->setDefaultSettings($resolver, true);
         $this->settings = $resolver->resolve($settings);
+
+        $this->logger = new NullLogger;
     }
 
     /**

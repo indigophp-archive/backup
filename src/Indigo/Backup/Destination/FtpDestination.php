@@ -16,7 +16,7 @@ use Symfony\Component\OptionsResolver\Options;
 use Flysystem\Filesystem;
 use Flysystem\Adapter\Ftp as Adapter;
 
-class FtpDestination implements DestinationInterface
+class FtpDestination extends AbstractDestination
 {
     /**
      * Filesystem object

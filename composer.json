@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "symfony/options-resolver": "v2.4.0"
+        "symfony/options-resolver": "v2.4.0",
+        "psr/log": "~1.0"
     },
     "require-dev": {
         "clouddueling/mysqldump-php": "1.0.0",
