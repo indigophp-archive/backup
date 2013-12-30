@@ -200,6 +200,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
         });
 
         // Get all databases if none or only excludes defined
+        // (This only works with SUPER access)
         if (empty($databases)) {
             $this->logger->debug('No database included, backing up all');
             if ($this->options['type'] == 'mysql') {
@@ -211,9 +212,9 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
                     }
                 }
             } else {
-                $message = 'Backing up all databases is not yet implemented in the given DB type: ' . $this->options['type'];
-                $this->logger->error($message);
-                throw new \Exception($message);
+                $m = 'Backing up all databases is not yet implemented in the given DB type: ' . $this->options['type'];
+                $this->logger->error($m);
+                throw new \Exception($m);
             }
         }
 

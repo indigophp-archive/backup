@@ -10,26 +10,21 @@
 
 namespace Indigo\Backup\Destination;
 
+use Flysystem\Filesystem;
+use Flysystem\Adapter\Local as Adapter;
+
 class LocalDestination extends AbstractDestination
 {
     /**
      * Base destination path
+     *
      * @var string
      */
-    protected $path;
+    protected $file;
 
-    public function __construct($path, $create = false)
+    public function __construct($path)
     {
-        $path = rtrim($path) . '/';
-        if (!is_dir($path) or !is_writeable($path)) {
-            if ($create) {
-                mkdir($path, 0777, true);
-            } else {
-                throw new \InvalidArgumentException('Given path is either not a directory or not writeable.');
-            }
-        }
-
-        $this->path = $path;
+        $this->file = new Filesystem(new Adapter($path));
     }
 
     /**
@@ -38,7 +33,10 @@ class LocalDestination extends AbstractDestination
     public function put(array $files)
     {
         foreach ($files as $file) {
-            copy($file, $this->path . basename($file));
+            $name = basename($file);
+            $file = fopen($file, 'r+');
+            $this->file->putStream($name, $file);
+            fclose($file);
         }
     }
 }

@@ -37,23 +37,11 @@ class FtpDestination extends AbstractDestination
         $resolver = new OptionsResolver();
         $this->setDefaultOptions($resolver);
 
-        $options = $resolver->resolve($options);
+        $this->options = $resolver->resolve($options);
 
-        $ftp = new Filesystem(new Adapter($options));
+        $this->ftp = new Filesystem(new Adapter($this->options));
 
-        $dir = '';
-        foreach (explode('/', trim($options['path'])) as $path) {
-            $dir .= $path . '/';
-
-            if ($ftp->has($dir)) {
-                continue;
-            }
-
-            $ftp->createDir($dir);
-        }
-
-        $this->options = $options;
-        $this->ftp = $ftp;
+        $this->ftp->createDir($this->options['path']);
     }
 
     /**
