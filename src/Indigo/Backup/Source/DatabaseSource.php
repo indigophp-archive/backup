@@ -202,7 +202,6 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
      */
     public function backup()
     {
-        // PHP <5.4.0 compliance
         $databases = array_filter($this->databases, function ($var) {
             return $var !== false;
         });
@@ -236,7 +235,6 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
 
         $result = array();
 
-        // Dump databases
         foreach ($this->databases as $name => $settings) {
             if ($settings === false) {
                 $this->logger->debug('Skipping database: ' . $name, compact('name'));
