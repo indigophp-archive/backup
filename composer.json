@@ -15,7 +15,8 @@
     },
     "require-dev": {
         "clouddueling/mysqldump-php": "1.0.0",
-        "frenkynet/flysystem": "dev-master"
+        "frenkynet/flysystem": "dev-master",
+        "mockery/mockery": "@stable"
     },
     "suggest": {
         "clouddueling/mysqldump-php": "PHP MySQL Dump implementation",

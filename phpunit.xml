@@ -1,0 +1,9 @@
+<phpunit
+         bootstrap="vendor/autoload.php"
+         colors="true">
+    <testsuites>
+        <testsuite name="Indigo Backup Test Suite">
+            <directory>tests/Indigo/Backup</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

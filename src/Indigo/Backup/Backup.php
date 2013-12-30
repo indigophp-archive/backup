@@ -106,6 +106,8 @@ class Backup implements LoggerAwareInterface
         $this->cleanUp();
 
         $this->logger->info('Backup finished succesfully');
+
+        return true;
     }
 
     /**
