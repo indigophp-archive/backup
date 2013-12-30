@@ -207,9 +207,12 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
                 $pdo = new \PDO('mysql:host=' . $this->options['host'] . ';', $this->options['username'], $this->options['password']);
 
                 foreach ($pdo->query('SHOW DATABASES') as $db) {
-                    if (!array_key_exists($db['Database'], $this->databases)) {
-                        $this->databases[$db['Database']] = array();
+                    $db = $db['Database'];
+                    if (array_key_exists($db, $this->databases)) {
+                        continue;
                     }
+
+                    $this->databases[$db] = array();
                 }
             } else {
                 $m = 'Backing up all databases is not yet implemented in the given DB type: ' . $this->options['type'];
