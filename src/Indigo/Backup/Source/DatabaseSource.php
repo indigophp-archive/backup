@@ -227,7 +227,14 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
             }
 
             $this->logger->debug('Backing up database: ' . $name, compact('name', 'settings'));
-            $dump = new Mysqldump($name, $this->options['username'], $this->options['password'], $this->options['host'], $this->options['type'], $settings);
+            $dump = new Mysqldump(
+                $name,
+                $this->options['username'],
+                $this->options['password'],
+                $this->options['host'],
+                $this->options['type'],
+                $settings
+            );
 
             $path = $this->options['tmp'] . "$name.sql";
             $dump->start($path);
