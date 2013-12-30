@@ -85,10 +85,10 @@ class FtpDestination extends AbstractDestination
         ));
 
         $resolver->setNormalizers(array(
-            'root' => function (Options $options, $value) {
+            'root' => function ($value) {
                 return rtrim($value, '/') . '/';
             },
-            'path' => function (Options $options, $value) {
+            'path' => function ($value) {
                 return trim($value) . '/';
             },
         ));
