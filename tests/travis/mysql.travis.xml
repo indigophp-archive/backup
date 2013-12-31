@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit bootstrap="../../vendor/autoload.php" colors="true">
+    <php>
+        <var name="db_type" value="mysql"/>
+        <var name="db_host" value="localhost" />
+        <var name="db_username" value="travis" />
+        <var name="db_password" value="" />
+        <var name="db_name" value="backup_tests" />
+        <var name="db_port" value="3306"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="Indigo Backup Test Suite">
+            <directory>./../tests/Indigo/Backup</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
