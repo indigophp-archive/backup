@@ -40,6 +40,11 @@ class FileExtensionProcessor implements ProcessorInterface
         return $this;
     }
 
+    public function getExtensions()
+    {
+    	return $this->extensions;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -52,11 +57,7 @@ class FileExtensionProcessor implements ProcessorInterface
         return array_filter($files, function($file) use($ext, $blacklist) {
             $file = pathinfo($file, PATHINFO_EXTENSION);
 
-            if (array_key_exists($file, $ext)) {
-                return ! $ext[$file];
-            }
-
-            return $blacklist;
+            return isset($ext[$file]) ? ! $ext[$file] : $blacklist;
         });
     }
 }
