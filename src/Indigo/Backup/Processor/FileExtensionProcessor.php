@@ -25,15 +25,15 @@ class FileExtensionProcessor implements ProcessorInterface
     public function addExtension($ext, $blacklist = null)
     {
         if (is_array($ext)) {
-        	foreach ($ext as $e => $b) {
-	            if (is_int($e)) {
-	            	$this->addExtension($b);
-	            } else {
-	            	$this->addExtension($e, $b);
-	            }
-        	}
+            foreach ($ext as $e => $b) {
+                if (is_int($e)) {
+                    $this->addExtension($b);
+                } else {
+                    $this->addExtension($e, $b);
+                }
+            }
         } else {
-        	is_null($blacklist) and $blacklist = $this->blacklist;
+            is_null($blacklist) and $blacklist = $this->blacklist;
             $this->extensions[$ext] = $blacklist;
         }
 
@@ -42,7 +42,7 @@ class FileExtensionProcessor implements ProcessorInterface
 
     public function getExtensions()
     {
-    	return $this->extensions;
+        return $this->extensions;
     }
 
     /**
@@ -51,10 +51,10 @@ class FileExtensionProcessor implements ProcessorInterface
     public function process(array $files)
     {
         // PHP 5.3 compliance
-		$ext       = $this->extensions;
-		$blacklist = $this->blacklist;
+        $ext       = $this->extensions;
+        $blacklist = $this->blacklist;
 
-        return array_filter($files, function($file) use($ext, $blacklist) {
+        return array_filter($files, function ($file) use ($ext, $blacklist) {
             $file = pathinfo($file, PATHINFO_EXTENSION);
 
             return isset($ext[$file]) ? ! $ext[$file] : $blacklist;
