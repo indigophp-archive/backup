@@ -119,7 +119,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
                 'no-data'                    => false,
                 'add-drop-database'          => false,
                 'add-drop-table'             => false,
-                'single-transaction'         => true,
+                'single-transaction'         => false,
                 'lock-tables'                => false,
                 'add-locks'                  => true,
                 'extended-insert'            => true,

@@ -38,5 +38,7 @@ class LocalDestination extends AbstractDestination
             $this->file->putStream($name, $file);
             fclose($file);
         }
+
+        return true;
     }
 }

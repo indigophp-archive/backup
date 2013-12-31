@@ -37,6 +37,6 @@ class BackupTest extends \PHPUnit_Framework_TestCase
 
         $backup = new Backup($source, $destination);
 
-        $this->assertEquals(true, $backup->run());
+        $this->assertTrue($backup->run());
     }
 }

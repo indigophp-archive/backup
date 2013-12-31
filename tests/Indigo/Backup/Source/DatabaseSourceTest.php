@@ -11,28 +11,58 @@
 namespace Indigo\Backup\Source;
 
 /**
- * Backup Test
+ * Database Source Test
  *
  * @author Márk Sági-Kazár <mark.sagikazar@gmail.com>
  */
-class DatabaseSourceTest extends \PHPUnit_Framework_TestCase
+class DatabaseSourceTest extends SourceTest
 {
-	protected $options = array();
+    public function setUp()
+    {
+        $options = array(
+            'host'     => $GLOBALS['db_host'],
+            'username' => $GLOBALS['db_username'],
+            'password' => $GLOBALS['db_password'],
+            'type'     => $GLOBALS['db_type'],
+        );
 
-	public function setUp()
-	{
-		$this->options = array(
-			'host' => $GLOBALS['db_host'],
-			'username' => $GLOBALS['db_username'],
-			'password' => $GLOBALS['db_password'],
-			'type' => $GLOBALS['db_type'],
-		);
-	}
+        $this->source = new DatabaseSource($options);
+        $this->source->includeDatabase('test');
+    }
 
-	public function testInstance()
-	{
-		$source = new DatabaseSource($this->options);
+    public function testIncludeDatabase()
+    {
+        $this->assertInstanceOf(
+            get_class($this->source),
+            $this->source->includeDatabase('test')
+        );
 
-		$this->assertInstanceOf('Indigo\\Backup\\Source\\DatabaseSource', $source);
-	}
+        $this->assertInstanceOf(
+            get_class($this->source),
+            $this->source->includeDatabase(array('test'))
+        );
+
+        $this->assertInstanceOf(
+            get_class($this->source),
+            $this->source->includeDatabase('test')
+        );
+    }
+
+    public function testExcludeDatabase()
+    {
+        $this->assertInstanceOf(
+            get_class($this->source),
+            $this->source->excludeDatabase('no_test')
+        );
+
+        $this->assertInstanceOf(
+            get_class($this->source),
+            $this->source->excludeDatabase(array('no_test'))
+        );
+
+        $this->assertInstanceOf(
+            get_class($this->source),
+            $this->source->excludeDatabase('no_test')
+        );
+    }
 }
