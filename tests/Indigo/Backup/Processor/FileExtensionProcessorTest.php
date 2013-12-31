@@ -17,7 +17,7 @@ namespace Indigo\Backup\Processor;
  */
 class FileExtensionProcessorTest extends \PHPUnit_Framework_TestCase
 {
-    public function blacklist_provider()
+    public function provider()
     {
         return array(
             array(
@@ -28,6 +28,7 @@ class FileExtensionProcessorTest extends \PHPUnit_Framework_TestCase
                     'test.nope',
                 ),
                 'jpg',
+                true
             ),
             array(
                 array(
@@ -37,6 +38,7 @@ class FileExtensionProcessorTest extends \PHPUnit_Framework_TestCase
                     'test.nope',
                 ),
                 'png',
+                false
             ),
             array(
                 array(
@@ -45,74 +47,44 @@ class FileExtensionProcessorTest extends \PHPUnit_Framework_TestCase
                     'test.png',
                     'test.nope',
                 ),
-                'nope',
+                array('nope', 'png' => true),
+                true
+            ),
+            array(
+                array(
+                    'test.jpg',
+                    'test.jpg',
+                    'test.png',
+                    'test.nope',
+                ),
+                array('jpg', 'png' => false, 'nope' => true),
+                false
             ),
         );
     }
 
-    public function whitelist_provider()
+    public function testAddExtension()
     {
-        return array(
-            array(
-                array(
-                    'test.jpg',
-                    'test.jpg',
-                    'test.png',
-                    'test.nope',
-                ),
-                'jpg',
-            ),
-            array(
-                array(
-                    'test.jpg',
-                    'test.jpg',
-                    'test.png',
-                    'test.nope',
-                ),
-                'png',
-            ),
-            array(
-                array(
-                    'test.jpg',
-                    'test.jpg',
-                    'test.png',
-                    'test.nope',
-                ),
-                'nope',
-            ),
+        $processor = new FileExtensionProcessor('none');
+        $this->assertInstanceOf(
+            'Indigo\\Backup\\Processor\\FileExtensionProcessor',
+            $processor->addExtension('nope')
         );
     }
 
     /**
-     * @dataProvider blacklist_provider
+     * @dataProvider provider
      */
-    public function testBlacklist(array $files, $ext)
+    public function testExtension(array $files, $ext, $blacklist)
     {
-        $processor = new FileExtensionProcessor($ext);
+        $processor = new FileExtensionProcessor($ext, $blacklist);
         $files = $processor->process($files);
 
-        foreach (array('jpg', 'png', 'nope') as $e) {
-            if ($ext == $e) {
+        foreach ($processor->getExtensions() as $e => $b) {
+            if ($b) {
                 $this->assertNotContains('test.' . $e, $files);
             } else {
                 $this->assertContains('test.' . $e, $files);
-            }
-        }
-    }
-
-    /**
-     * @dataProvider whitelist_provider
-     */
-    public function testWhitelist(array $files, $ext)
-    {
-        $processor = new FileExtensionProcessor($ext, false);
-        $files = $processor->process($files);
-
-        foreach (array('jpg', 'png', 'nope') as $e) {
-            if ($ext == $e) {
-                $this->assertContains('test.' . $e, $files);
-            } else {
-                $this->assertNotContains('test.' . $e, $files);
             }
         }
     }
