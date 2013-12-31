@@ -27,7 +27,7 @@ class DatabaseSourceTest extends SourceTest
         );
 
         $this->source = new DatabaseSource($options);
-        $this->source->includeDatabase('test');
+        $this->source->includeDatabase($GLOBALS['db_name']);
     }
 
     public function testIncludeDatabase()
