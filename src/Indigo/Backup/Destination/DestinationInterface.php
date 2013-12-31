@@ -13,10 +13,10 @@ namespace Indigo\Backup\Destination;
 interface DestinationInterface
 {
 	/**
-	 * Put files to destination
+	 * Save files to destination
 	 *
 	 * @param  array   $files
 	 * @return boolean Succes or failure
 	 */
-    public function put(array $files);
+    public function save(array $files);
 }

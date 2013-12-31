@@ -30,7 +30,7 @@ class LocalDestination extends AbstractDestination
     /**
      * {@inheritdoc}
      */
-    public function put(array $files)
+    public function save(array $files)
     {
         foreach ($files as $file) {
             $name = basename($file);

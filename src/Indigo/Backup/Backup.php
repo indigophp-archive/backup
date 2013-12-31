@@ -100,7 +100,7 @@ class Backup implements LoggerAwareInterface
 
         // Send data to destinations
         foreach ($this->destinations as $destination) {
-            $destination->put($files);
+            $destination->save($files);
         }
 
         $this->cleanUp();

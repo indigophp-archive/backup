@@ -60,8 +60,8 @@ abstract class DestinationTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provider
      */
-    public function testPut($files)
+    public function testSave($files)
     {
-        $this->assertTrue($this->destination->put($files));
+        $this->assertTrue($this->destination->save($files));
     }
 }

@@ -30,8 +30,8 @@ class BackupTest extends \PHPUnit_Framework_TestCase
         });
 
         $destination = \Mockery::mock('Indigo\Backup\Destination\DestinationInterface', function($mock) {
-            $mock->shouldReceive('put')
-                ->andReturn(array());
+            $mock->shouldReceive('save')
+                ->andReturn(true);
         });
 
 
