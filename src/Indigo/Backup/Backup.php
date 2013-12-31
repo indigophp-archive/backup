@@ -60,7 +60,7 @@ class Backup implements LoggerAwareInterface
         if ($prepend) {
             array_unshift($this->sources, $source);
         } else {
-            array_push($this->sources, $source);
+            $this->sources[] = $source;
         }
 
         return $this;
@@ -78,7 +78,7 @@ class Backup implements LoggerAwareInterface
         if ($prepend) {
             array_unshift($this->destinations, $destination);
         } else {
-            array_push($this->destinations, $destination);
+            $this->destinations[] = $destination;
         }
 
         return $this;
