@@ -12,11 +12,11 @@ namespace Indigo\Backup\Destination;
 
 interface DestinationInterface
 {
-	/**
-	 * Save files to destination
-	 *
-	 * @param  array   $files
-	 * @return boolean Succes or failure
-	 */
+    /**
+     * Save files to destination
+     *
+     * @param  array   $files
+     * @return boolean Succes or failure
+     */
     public function save(array $files);
 }
