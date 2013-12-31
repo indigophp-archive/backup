@@ -1,8 +1,9 @@
 Indigo Backup
 =============
 
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/indigophp/backup/badges/quality-score.png?s=2cf8773e5649fb85fbd3d21e05f77446cd7c0efe)](https://scrutinizer-ci.com/g/indigophp/backup/)
 [![Build Status](https://travis-ci.org/indigophp/backup.png?branch=develop)](https://travis-ci.org/indigophp/backup)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/indigophp/backup/badges/quality-score.png?s=2cf8773e5649fb85fbd3d21e05f77446cd7c0efe)](https://scrutinizer-ci.com/g/indigophp/backup/)
+[![Code Coverage](https://scrutinizer-ci.com/g/indigophp/backup/badges/coverage.png?s=760538c10f947ddd297fd3d36ca20fc3ad7007a7)](https://scrutinizer-ci.com/g/indigophp/backup/)
 
 Create backup from any source (files, databases, stream output, etc) and store at any destination.
 
