@@ -12,11 +12,11 @@ namespace Indigo\Backup\Processor;
 
 interface ProcessorInterface
 {
-	/**
-	 * Process list of files
-	 *
-	 * @param  array  $files
-	 * @return array List of files
-	 */
+    /**
+     * Process list of files
+     *
+     * @param  array  $files
+     * @return array List of files
+     */
     public function process(array $files);
 }
