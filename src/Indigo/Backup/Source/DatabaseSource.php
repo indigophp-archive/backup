@@ -51,7 +51,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
     /**
      * Temporary filesystem
      *
-     * @var string
+     * @var Filesystem
      */
     protected $tmp;
 
@@ -163,18 +163,20 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
      */
     public function includeDatabase($db, array $settings = array())
     {
-        is_array($db) or $db = array($db => $settings);
-
         $resolver = new OptionsResolver();
         $this->setDefaultSettings($resolver);
 
-        foreach ($db as $d => $settings) {
-            if (is_int($d)) {
-                $d = $settings;
-                $settings = array();
-            }
+        if (is_array($db)) {
+            foreach ($db as $d => $settings) {
+                if (is_int($d)) {
+                    $d = $settings;
+                    $settings = array();
+                }
 
-            $this->databases[$d] = $resolver->resolve($settings);
+                $this->databases[$d] = $resolver->resolve($settings);
+            }
+        } else {
+            $this->databases[$db] = $resolver->resolve($settings);
         }
 
         return $this;
@@ -188,11 +190,14 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
      */
     public function excludeDatabase($db)
     {
-        is_array($db) or $db = array($db);
-
-        foreach ($db as $d) {
-            $this->databases[$d] = false;
+        if (is_array($db)) {
+            foreach ($db as $d) {
+                $this->databases[$d] = false;
+            }
+        } else {
+            $this->databases[$db] = false;
         }
+
 
         return $this;
     }
