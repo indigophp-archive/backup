@@ -296,7 +296,6 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
             }
         } else {
             $msg = 'Backing up all databases is not yet implemented in the given DB type: ' . $this->options['type'];
-            $this->logger->error($msg);
             throw new \Exception($msg);
         }
     }
