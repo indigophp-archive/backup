@@ -15,8 +15,13 @@ namespace Indigo\Backup\Processor;
  *
  * @author Márk Sági-Kazár <mark.sagikazar@gmail.com>
  */
-class FileExtensionProcessorTest extends \PHPUnit_Framework_TestCase
+class FileExtensionProcessorTest extends ProcessorTest
 {
+    public function setUp()
+    {
+        $this->processor = new FileExtensionProcessor('nope');
+    }
+
     public function provider()
     {
         return array(
@@ -65,10 +70,9 @@ class FileExtensionProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testAddExtension()
     {
-        $processor = new FileExtensionProcessor('none');
         $this->assertInstanceOf(
-            'Indigo\\Backup\\Processor\\FileExtensionProcessor',
-            $processor->addExtension('nope')
+            get_class($this->processor),
+            $this->processor->addExtension('nope')
         );
     }
 

@@ -11,7 +11,7 @@
 namespace Indigo\Backup\Destination;
 
 /**
- * Destiantion Test
+ * Destination Test
  *
  * @author Márk Sági-Kazár <mark.sagikazar@gmail.com>
  */
