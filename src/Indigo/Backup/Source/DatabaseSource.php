@@ -173,9 +173,17 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
                     $settings = array();
                 }
 
+                if (empty($d) or ! is_string($d)) {
+                    throw new \InvalidArgumentException('Invalid database name: "' . $d . '"');
+                }
+
                 $this->databases[$d] = $resolver->resolve($settings);
             }
         } else {
+            if (empty($db) or ! is_string($db)) {
+                throw new \InvalidArgumentException('Invalid database name: "' . $db . '"');
+            }
+
             $this->databases[$db] = $resolver->resolve($settings);
         }
 
@@ -192,14 +200,64 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
     {
         if (is_array($db)) {
             foreach ($db as $d) {
-                $this->databases[$d] = false;
+                $this->excludeDatabase($d);
             }
         } else {
+            if (empty($db) or ! is_string($db)) {
+                throw new \InvalidArgumentException('Invalid database name: "' . $db . '"');
+            }
+
             $this->databases[$db] = false;
         }
 
-
         return $this;
+    }
+
+    /**
+     * Return current databases
+     *
+     * @return array
+     */
+    public function getDatabases()
+    {
+        return $this->databases;
+    }
+
+    /**
+     * Are there any database included?
+     *
+     * @return boolean
+     */
+    public function hasDatabase()
+    {
+        // Excluded database does not count
+        $databases = array_filter($this->databases, function ($var) {
+            return $var !== false;
+        });
+
+        return ! empty($databases);
+    }
+
+    /**
+     * Check database included
+     *
+     * @param  string  $db
+     * @return boolean
+     */
+    public function isIncluded($db)
+    {
+        return array_key_exists($db, $this->databases) and $this->databases[$db] !== false;
+    }
+
+    /**
+     * Check database excluded
+     *
+     * @param  string  $db
+     * @return boolean
+     */
+    public function isExcluded($db)
+    {
+        return array_key_exists($db, $this->databases) and $this->databases[$db] === false;
     }
 
     /**
@@ -207,17 +265,6 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
      */
     public function backup()
     {
-        $databases = array_filter($this->databases, function ($var) {
-            return $var !== false;
-        });
-
-        // Get all databases if none or only excludes defined
-        // (This only works with SUPER access)
-        if (empty($databases)) {
-            $this->logger->debug('No database included, backing up all');
-            $this->getDatabases();
-        }
-
         $result = array();
 
         foreach ($this->databases as $name => $settings) {
@@ -268,35 +315,6 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
                 break;
             default:
                 break;
-        }
-    }
-
-    /**
-     * Fetch databases from DB
-     *
-     * This only works with SUPER access on MySQL
-     */
-    private function getDatabases()
-    {
-        if ($this->options['type'] == 'mysql') {
-            $pdo = new \PDO(
-                'mysql:host=' . $this->options['host'] . ';',
-                $this->options['username'],
-                $this->options['password']
-            );
-
-            foreach ($pdo->query('SHOW DATABASES') as $db) {
-                $db = $db['Database'];
-
-                if (array_key_exists($db, $this->databases)) {
-                    continue;
-                }
-
-                $this->includeDatabase($db);
-            }
-        } else {
-            $msg = 'Backing up all databases is not yet implemented in the given DB type: ' . $this->options['type'];
-            throw new \Exception($msg);
         }
     }
 }
