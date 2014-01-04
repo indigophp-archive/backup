@@ -1,65 +1,60 @@
-Indigo Backup
-=============
+# Indigo Backup
 
 [![Build Status](https://travis-ci.org/indigophp/backup.png?branch=develop)](https://travis-ci.org/indigophp/backup)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/indigophp/backup/badges/quality-score.png?s=2cf8773e5649fb85fbd3d21e05f77446cd7c0efe)](https://scrutinizer-ci.com/g/indigophp/backup/)
 [![Code Coverage](https://scrutinizer-ci.com/g/indigophp/backup/badges/coverage.png?s=760538c10f947ddd297fd3d36ca20fc3ad7007a7)](https://scrutinizer-ci.com/g/indigophp/backup/)
 
-Create backup from any source (files, databases, stream output, etc) and store at any destination.
+**Create backup from any source (files, databases, stream output, etc) and store at any destination.**
 
-Current supported sources:
-* Database (tested only with MySQL)
-* Files (experimental, directories not supported)
+## Install
 
-Current supported destinations:
-* Local
-* Ftp
+Via Composer
 
-Usage
------
-
-```php
-<?php
-
-use Indigo\Backup\Backup;
-use Indigo\Backup\Source\DatabaseSource;
-use Indigo\Backup\Destination\LocalDestination;
-use Indigo\Backup\Destination\FtpDestination;
-
-// See other settings at https://github.com/clouddueling/mysqldump-php
-$source = new DatabaseSource(array(
-	'host'     => 'localhost',
-	'username' => 'root',
-	'password' => 'secret',
-	'type'     => 'mysql',
-), array(
-	'compress' => 'GZIP',
-));
-
-// Create directory if not exists
-$destination = new LocalDestination('/tmp/databases', true);
-
-$backup = new Backup($source, $destination);
-
-$destination = new FtpDestination(array(
-	'host' => 'localhost',
-	'username' => 'root',
-	'password' => 'secret',
-	'port' => 21,
-	'root' => '/home/backup',
-	'path' => date('YmdHis')
-));
-
-$backup->pushDestination($destination);
-
-$backup->run();
-
+``` json
+{
+    "require": {
+        "indigophp/dumper": "@stable"
+    }
+}
 ```
 
-Todo
-----
+## Usage
 
-* SFTP Destination
-* Unit tests
-* Reviewing current backup implementation
-* Error handling of streams
+``` php
+// See Dumper at https://github.com/indigophp/dumper
+$source = new Indigo\Backup\Source\DatabaseSource($dumper);
+
+// See Flysystem at https://github.com/FrenkyNet/Filesystem
+$destination = new FlysystemDestination($flysystem);
+
+$backup = new Indigo\Backup\Backup($source, $destination);
+
+$backup->run();
+```
+
+## Third-party
+
+Current sources and destinations use the following libraries:
+
+* [FrenkyNet/Flysystem](https://github.com/FrenkyNet/Filesystem)
+* [IndigoPHP/Dumper](https://github.com/indigophp/dumper)
+
+## Testing
+
+``` bash
+$ phpunit
+```
+
+## Contributing
+
+Please see [CONTRIBUTING](https://github.com/indigophp/backup/blob/develop/CONTRIBUTING.md) for details.
+
+## Credits
+
+- [Márk Sági-Kazár](https://github.com/sagikazarmark)
+- [All Contributors](https://github.com/indigophp/backup/contributors)
+
+
+## License
+
+The MIT License (MIT). Please see [License File](https://github.com/indigophp/backup/blob/develop/LICENSE) for more information.
