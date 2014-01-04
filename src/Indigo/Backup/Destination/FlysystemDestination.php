@@ -21,9 +21,17 @@ class FlysystemDestination extends AbstractDestination
      */
     protected $filesystem;
 
-    public function __construct(Filesystem $filesystem)
+    /**
+     * Optional path under root
+     *
+     * @var string
+     */
+    protected $path;
+
+    public function __construct(Filesystem $filesystem, $path = null)
     {
         $this->filesystem = $filesystem;
+        $this->path = $path ? trim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR : null;
     }
 
     /**
@@ -34,7 +42,7 @@ class FlysystemDestination extends AbstractDestination
         foreach ($files as $file) {
             $name = basename($file);
             $file = fopen($file, 'r+');
-            $this->filesystem->putStream($name, $file);
+            $this->filesystem->putStream($this->path . $name, $file);
             fclose($file);
         }
     }
