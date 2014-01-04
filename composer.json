@@ -14,12 +14,12 @@
         "psr/log": "~1.0"
     },
     "require-dev": {
-        "clouddueling/mysqldump-php": "1.0.0",
+        "indigophp/dumper": "dev-master",
         "frenkynet/flysystem": "dev-master",
         "mockery/mockery": "@stable"
     },
     "suggest": {
-        "clouddueling/mysqldump-php": "PHP MySQL Dump implementation",
+        "indigophp/dumper": "Dump databases to SQL file",
         "frenkynet/flysystem": "Filesystem abstraction layer used for file uploads"
     },
     "autoload": {

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit bootstrap="tests/bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="Indigo Backup Test Suite">
+            <directory>tests/Indigo/Backup</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

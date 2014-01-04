@@ -10,254 +10,57 @@
 
 namespace Indigo\Backup\Source;
 
-use Clouddueling\Mysqldump\Mysqldump;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\OptionsResolver\Options;
+use Indigo\Dumper\Dumper;
+use Indigo\Dumper\Store\FileStore;
 use Psr\Log\NullLogger;
-use Flysystem\Filesystem;
-use Flysystem\Adapter\Local as Adapter;
 
 class DatabaseSource extends AbstractSource implements CleanSourceInterface
 {
     /**
-     * Connection options
+     * File
      *
-     * @var array
+     * @var string
      */
-    protected $options = array();
+    protected $file;
 
     /**
-     * Dump settings
+     * Dumper object
      *
-     * @var array
+     * @var Dumper
      */
-    protected $settings = array();
+    protected $dumper;
 
-    /**
-     * List of databases to operate on
-     *
-     * @var array
-     */
-    protected $databases = array();
-
-    /**
-     * Result of files
-     *
-     * @var array
-     */
-    protected $result = array();
-
-    /**
-     * Temporary filesystem
-     *
-     * @var Filesystem
-     */
-    protected $tmp;
-
-    public function __construct(array $options, array $settings = array())
+    public function __construct(Dumper $dumper)
     {
-        $resolver = new OptionsResolver();
-        $this->setDefaultOptions($resolver);
-        $this->options = $resolver->resolve($options);
-
-        $this->tmp = new Filesystem(new Adapter($this->options['tmp']));
-
-        $resolver = new OptionsResolver();
-        $this->setDefaultSettings($resolver, true);
-        $this->settings = $resolver->resolve($settings);
-
+        $this->setDumper($dumper);
         $this->logger = new NullLogger;
     }
 
     /**
-     * Set default connection options
+     * Get Dumper object
      *
-     * @param OptionsResolverInterface $resolver
+     * @return Dumper
      */
-    protected function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getDumper()
     {
-        $resolver->setRequired(array('username', 'password'));
-
-        $resolver->setDefaults(array(
-            'host' => 'localhost',
-            'type' => 'mysql',
-            'tmp'  => sys_get_temp_dir() . '/' . uniqid('backup_'),
-        ));
-
-        $resolver->setAllowedValues(array(
-            'type' => array('mysql', 'pgsql', 'dblib'),
-        ));
-
-        $resolver->setAllowedTypes(array(
-            'username' => 'string',
-            'password' => 'string',
-            'host'     => 'string',
-            'type'     => 'string',
-        ));
-
-        $resolver->setNormalizers(array(
-            'tmp' => function (Options $option, $value) {
-                return rtrim($value) . '/';
-            },
-        ));
+        return $this->dumps;
     }
 
     /**
-     * Set default dump settings
+     * Add Dumper object
      *
-     * @param OptionsResolverInterface $resolver
-     * @param boolean                  $global
-     */
-    protected function setDefaultSettings(OptionsResolverInterface $resolver, $global = false)
-    {
-        if ($global) {
-            $resolver->setDefaults(array(
-                'include-tables'             => array(),
-                'exclude-tables'             => array(),
-                'compress'                   => 'None',
-                'no-data'                    => false,
-                'add-drop-database'          => false,
-                'add-drop-table'             => false,
-                'single-transaction'         => false,
-                'lock-tables'                => false,
-                'add-locks'                  => true,
-                'extended-insert'            => true,
-                'disable-foreign-keys-check' => false,
-            ));
-        } else {
-            $resolver->setDefaults($this->settings);
-        }
-
-        $resolver->setAllowedValues(array(
-            'compress' => array('NONE', 'GZIP', 'BZIP2'),
-        ));
-
-        $resolver->setAllowedTypes(array(
-            'include-tables'             => 'array',
-            'exclude-tables'             => 'array',
-            'compress'                   => 'string',
-            'no-data'                    => 'bool',
-            'add-drop-database'          => 'bool',
-            'add-drop-table'             => 'bool',
-            'single-transaction'         => 'bool',
-            'lock-tables'                => 'bool',
-            'add-locks'                  => 'bool',
-            'extended-insert'            => 'bool',
-            'disable-foreign-keys-check' => 'bool',
-        ));
-
-        $resolver->setNormalizers(array(
-            'compress' => function (Options $option, $value) {
-                return strtoupper($value);
-            },
-        ));
-    }
-
-    /**
-     * Add included database
-     *
-     * @param  string         $db       Database name
-     * @param  array          $settings Dump settings
+     * @param Dumper          $dumper
      * @return DatabaseSource
      */
-    public function includeDatabase($db, array $settings = array())
+    public function setDumper(Dumper $dumper)
     {
-        $resolver = new OptionsResolver();
-        $this->setDefaultSettings($resolver);
-
-        if (is_array($db)) {
-            foreach ($db as $d => $settings) {
-                if (is_int($d)) {
-                    $d = $settings;
-                    $settings = array();
-                }
-
-                if (empty($d) or ! is_string($d)) {
-                    throw new \InvalidArgumentException('Invalid database name: "' . $d . '"');
-                }
-
-                $this->databases[$d] = $resolver->resolve($settings);
-            }
-        } else {
-            if (empty($db) or ! is_string($db)) {
-                throw new \InvalidArgumentException('Invalid database name: "' . $db . '"');
-            }
-
-            $this->databases[$db] = $resolver->resolve($settings);
+        if (!$dumper->getStore() instanceof FileStore) {
+            throw new \InvalidArgumentException('Store should be an instance of FileStore');
         }
 
-        return $this;
-    }
-
-    /**
-     * Add excluded database
-     *
-     * @param  string         $db Database name
-     * @return DatabaseSource
-     */
-    public function excludeDatabase($db)
-    {
-        if (is_array($db)) {
-            foreach ($db as $d) {
-                $this->excludeDatabase($d);
-            }
-        } else {
-            if (empty($db) or ! is_string($db)) {
-                throw new \InvalidArgumentException('Invalid database name: "' . $db . '"');
-            }
-
-            $this->databases[$db] = false;
-        }
+        $this->dumper = $dumper;
 
         return $this;
-    }
-
-    /**
-     * Return current databases
-     *
-     * @return array
-     */
-    public function getDatabases()
-    {
-        return $this->databases;
-    }
-
-    /**
-     * Are there any database included?
-     *
-     * @return boolean
-     */
-    public function hasDatabase()
-    {
-        // Excluded database does not count
-        $databases = array_filter($this->databases, function ($var) {
-            return $var !== false;
-        });
-
-        return ! empty($databases);
-    }
-
-    /**
-     * Check database included
-     *
-     * @param  string  $db
-     * @return boolean
-     */
-    public function isIncluded($db)
-    {
-        return array_key_exists($db, $this->databases) and $this->databases[$db] !== false;
-    }
-
-    /**
-     * Check database excluded
-     *
-     * @param  string  $db
-     * @return boolean
-     */
-    public function isExcluded($db)
-    {
-        return array_key_exists($db, $this->databases) and $this->databases[$db] === false;
     }
 
     /**
@@ -265,30 +68,13 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
      */
     public function backup()
     {
-        $result = array();
+        $this->logger->debug('Backing up database: ' . $this->dumper->getDatabase());
 
-        foreach ($this->databases as $name => $settings) {
-            if ($settings === false) {
-                $this->logger->debug('Skipping database: ' . $name, compact('name'));
-                continue;
-            }
+        $this->dumper->dump();
 
-            $this->logger->debug('Backing up database: ' . $name, compact('name', 'settings'));
-            $dump = new Mysqldump(
-                $name,
-                $this->options['username'],
-                $this->options['password'],
-                $this->options['host'],
-                $this->options['type'],
-                $settings
-            );
+        $this->file = $this->dumper->getStore()->getFile();
 
-            $path = $this->options['tmp'] . $name . '.sql';
-            $dump->start($path);
-            $result[] = $path . $this->getExt($settings);
-        }
-
-        return $this->result = $result;
+        return array($this->file);
     }
 
     /**
@@ -296,25 +82,6 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
      */
     public function cleanup()
     {
-        $this->tmp->deleteDir('');
-    }
-
-    /**
-     * Get file extension based on compression
-     *
-     * @return string
-     */
-    private function getExt(array $settings)
-    {
-        switch ($settings['compress']) {
-            case 'GZIP':
-                return '.gz';
-                break;
-            case 'BZIP2':
-                return '.bz2';
-                break;
-            default:
-                break;
-        }
+        @unlink($this->file);
     }
 }

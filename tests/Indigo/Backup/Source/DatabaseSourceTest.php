@@ -10,6 +10,8 @@
 
 namespace Indigo\Backup\Source;
 
+use Indigo\Dumper\Dumper;
+
 /**
  * Database Source Test
  *
@@ -19,50 +21,23 @@ class DatabaseSourceTest extends SourceTest
 {
     public function setUp()
     {
-        $options = array(
-            'host'     => $GLOBALS['db_host'],
-            'username' => $GLOBALS['db_username'],
-            'password' => $GLOBALS['db_password'],
-            'type'     => $GLOBALS['db_type'],
-        );
+        $dumper = \Mockery::mock('Indigo\\Dumper\\Dumper', function ($mock) {
+            $mock->shouldReceive('getStore')
+                ->andReturn(\Mockery::mock('Indigo\\Dumper\\Store\\FileStore', function ($mock) {
+                    $mock->shouldReceive('getFile')
+                        ->andReturn(tempnam(sys_get_temp_dir(), ''));
+                }));
 
-        $this->source = new DatabaseSource($options);
-        $this->source->includeDatabase($GLOBALS['db_name']);
+            $mock->shouldReceive('getDatabase')->andReturn('test');
+            $mock->shouldReceive('dump')->andReturn(true);
+        });
+
+
+        $this->source = new DatabaseSource($dumper);
     }
 
-    public function testIncludeDatabase()
+    public function tearDown()
     {
-        $this->assertInstanceOf(
-            get_class($this->source),
-            $this->source->includeDatabase('test')
-        );
-
-        $this->assertInstanceOf(
-            get_class($this->source),
-            $this->source->includeDatabase(array('test'))
-        );
-
-        $this->assertInstanceOf(
-            get_class($this->source),
-            $this->source->includeDatabase('test')
-        );
-    }
-
-    public function testExcludeDatabase()
-    {
-        $this->assertInstanceOf(
-            get_class($this->source),
-            $this->source->excludeDatabase('no_test')
-        );
-
-        $this->assertInstanceOf(
-            get_class($this->source),
-            $this->source->excludeDatabase(array('no_test'))
-        );
-
-        $this->assertInstanceOf(
-            get_class($this->source),
-            $this->source->excludeDatabase('no_test')
-        );
+        \Mockery::close();
     }
 }
