@@ -121,7 +121,7 @@ class Backup implements LoggerAwareInterface
      */
     private function cleanUp(array $sources = array())
     {
-        foreach ($this->sources as $source) {
+        foreach ($sources as $source) {
             $source->cleanup();
         }
     }

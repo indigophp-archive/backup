@@ -17,27 +17,66 @@ namespace Indigo\Backup;
  */
 class BackupTest extends \PHPUnit_Framework_TestCase
 {
+    public function provider()
+    {
+        return array(
+            array(
+                \Mockery::mock(
+                    'Indigo\\Backup\\Source\\SourceInterface, Indigo\\Backup\\Source\\CleanSourceInterface',
+                    function($mock) {
+                        $mock->shouldReceive('backup')->andReturn(array());
+                        $mock->shouldReceive('cleanup')->andReturn(true);
+                    }
+                ),
+                \Mockery::mock(
+                    'Indigo\\Backup\\Destination\\DestinationInterface',
+                    function($mock) {
+                        $mock->shouldReceive('save')->andReturn(true);
+                    }
+                ),
+            ),
+            array(
+                \Mockery::mock(
+                    'Indigo\\Backup\\Source\\SourceInterface',
+                    function($mock) {
+                        $mock->shouldReceive('backup')->andReturn(array());
+                    }
+                ),
+                \Mockery::mock(
+                    'Indigo\\Backup\\Destination\\DestinationInterface',
+                    function($mock) {
+                        $mock->shouldReceive('save')->andReturn(true);
+                    }
+                ),
+            ),
+            array(
+                \Mockery::mock(
+                    'Indigo\\Backup\\Source\\DatabaseSource',
+                    function($mock) {
+                        $mock->shouldReceive('backup')->andReturn(array());
+                        $mock->shouldReceive('cleanup')->andReturn(true);
+                    }
+                ),
+                \Mockery::mock(
+                    'Indigo\\Backup\\Destination\\FlysystemDestination',
+                    function($mock) {
+                        $mock->shouldReceive('save')->andReturn(true);
+                    }
+                ),
+            ),
+        );
+    }
+
     public function tearDown()
     {
         \Mockery::close();
     }
 
-    public function testBackup()
+    /**
+     * @dataProvider provider
+     */
+    public function testBackup($source, $destination)
     {
-        $source = \Mockery::mock(
-            'Indigo\\Backup\\Source\\SourceInterface, Indigo\\Backup\\Source\\CleanSourceInterface',
-            function($mock) {
-                $mock->shouldReceive('backup')
-                    ->andReturn(array());
-
-                $mock->shouldReceive('cleanup')->andReturn(true);
-        });
-
-        $destination = \Mockery::mock('Indigo\\Backup\\Destination\\DestinationInterface', function($mock) {
-            $mock->shouldReceive('save')
-                ->andReturn(true);
-        });
-
         $logger = \Mockery::mock('Psr\\Log\\LoggerInterface');
 
         $backup = new Backup($source, $destination);
