@@ -44,4 +44,18 @@ abstract class SourceTest extends \PHPUnit_Framework_TestCase
             $this->assertFileExists($files);
         }
     }
+
+    public function testLogger()
+    {
+        $logger = \Mockery::mock('Psr\\Log\\LoggerInterface');
+
+        $this->source->setLogger($logger);
+    }
+
+    public function testCleanup()
+    {
+        if ($this->source instanceof CleanSourceInterface) {
+            $this->assertTrue(is_bool($this->source->cleanup()));
+        }
+    }
 }

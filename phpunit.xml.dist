@@ -5,4 +5,10 @@
             <directory>tests/Indigo/Backup</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/Indigo/Backup</directory>
+        </whitelist>
+    </filter>
 </phpunit>

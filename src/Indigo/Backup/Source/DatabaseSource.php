@@ -43,7 +43,7 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
      */
     public function getDumper()
     {
-        return $this->dumps;
+        return $this->dumper;
     }
 
     /**
@@ -82,6 +82,6 @@ class DatabaseSource extends AbstractSource implements CleanSourceInterface
      */
     public function cleanup()
     {
-        @unlink($this->file);
+        return @unlink($this->file);
     }
 }

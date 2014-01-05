@@ -40,4 +40,35 @@ class DatabaseSourceTest extends SourceTest
     {
         \Mockery::close();
     }
+
+    public function testDumper()
+    {
+        $dumper = $this->source->getDumper();
+
+        $this->assertInstanceOf(
+            'Indigo\\Dumper\\Dumper',
+            $dumper
+        );
+
+        $this->assertInstanceOf(
+            get_class($this->source),
+            $this->source->setDumper($dumper)
+        );
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testStore()
+    {
+        $dumper = \Mockery::mock('Indigo\\Dumper\\Dumper', function ($mock) {
+            $mock->shouldReceive('getStore')
+                ->andReturn(\Mockery::mock('Indigo\\Dumper\\Store\\StoreInterface'));
+
+            $mock->shouldReceive('getDatabase')->andReturn('test');
+            $mock->shouldReceive('dump')->andReturn(true);
+        });
+
+        $this->source->setDumper($dumper);
+    }
 }
