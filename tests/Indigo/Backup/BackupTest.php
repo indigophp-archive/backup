@@ -24,11 +24,13 @@ class BackupTest extends \PHPUnit_Framework_TestCase
 
     public function testBackup()
     {
-        $source = \Mockery::mock('Indigo\\Backup\\Source\\SourceInterface', function($mock) {
-            $mock->shouldReceive('backup')
-                ->andReturn(array());
+        $source = \Mockery::mock(
+            'Indigo\\Backup\\Source\\SourceInterface, Indigo\\Backup\\Source\\CleanSourceInterface',
+            function($mock) {
+                $mock->shouldReceive('backup')
+                    ->andReturn(array());
 
-            $mock->shouldReceive('cleanup')->andReturn(true);
+                $mock->shouldReceive('cleanup')->andReturn(true);
         });
 
         $destination = \Mockery::mock('Indigo\\Backup\\Destination\\DestinationInterface', function($mock) {
