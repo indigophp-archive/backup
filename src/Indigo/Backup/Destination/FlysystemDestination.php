@@ -45,5 +45,7 @@ class FlysystemDestination extends AbstractDestination
             $this->filesystem->putStream($this->path . $name, $file);
             fclose($file);
         }
+
+        return true;
     }
 }

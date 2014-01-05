@@ -57,6 +57,13 @@ abstract class DestinationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testLogger()
+    {
+        $logger = \Mockery::mock('Psr\\Log\\LoggerInterface');
+
+        $this->destination->setLogger($logger);
+    }
+
     /**
      * @dataProvider provider
      */

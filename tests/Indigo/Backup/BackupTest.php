@@ -38,11 +38,7 @@ class BackupTest extends \PHPUnit_Framework_TestCase
                 ->andReturn(true);
         });
 
-        $logger = \Mockery::mock('Psr\\Log\\LoggerInterface', function($mock) {
-            $mock->shouldReceive('save')
-                ->andReturn(true);
-        });
-
+        $logger = \Mockery::mock('Psr\\Log\\LoggerInterface');
 
         $backup = new Backup($source, $destination);
 
