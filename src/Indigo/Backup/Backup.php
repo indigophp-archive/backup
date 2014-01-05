@@ -49,13 +49,13 @@ class Backup implements LoggerAwareInterface
     }
 
     /**
-     * Push a new SourceInterface
+     * Add a new SourceInterface
      *
      * @param  SourceInterface $source
      * @param  boolean         $prepend Add the source to the beginning of the list
      * @return Backup
      */
-    public function pushSource(SourceInterface $source, $prepend = false)
+    public function addSource(SourceInterface $source, $prepend = false)
     {
         if ($prepend) {
             array_unshift($this->sources, $source);
@@ -67,13 +67,13 @@ class Backup implements LoggerAwareInterface
     }
 
     /**
-     * Push a new DestinationInterface
+     * Add a new DestinationInterface
      *
      * @param  DestinationInterface $destination
      * @param  boolean              $prepend     Add the destiantion to the beginning of the list
      * @return Backup
      */
-    public function pushDestination(DestinationInterface $destination, $prepend = false)
+    public function addDestination(DestinationInterface $destination, $prepend = false)
     {
         if ($prepend) {
             array_unshift($this->destinations, $destination);
@@ -93,9 +93,15 @@ class Backup implements LoggerAwareInterface
 
         $files = array();
 
+        $clean = array();
+
         // Get files from sources
         foreach ($this->sources as $source) {
             $files = array_merge($files, $source->backup());
+
+            if ($source instanceof CleanSourceInterface) {
+                $clean[] = $source;
+            }
         }
 
         // Send data to destinations
@@ -103,7 +109,7 @@ class Backup implements LoggerAwareInterface
             $destination->save($files);
         }
 
-        $this->cleanUp();
+        $this->cleanUp($clean);
 
         $this->logger->info('Backup finished succesfully');
 
@@ -113,12 +119,10 @@ class Backup implements LoggerAwareInterface
     /**
      * Clean up junk data
      */
-    private function cleanUp()
+    private function cleanUp(array $sources = array())
     {
         foreach ($this->sources as $source) {
-            if ($source instanceof CleanSourceInterface) {
-                $source->cleanup();
-            }
+            $source->cleanup();
         }
     }
 

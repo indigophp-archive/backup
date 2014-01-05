@@ -24,12 +24,19 @@ class BackupTest extends \PHPUnit_Framework_TestCase
 
     public function testBackup()
     {
-        $source = \Mockery::mock('Indigo\Backup\Source\SourceInterface', function($mock) {
+        $source = \Mockery::mock('Indigo\\Backup\\Source\\SourceInterface', function($mock) {
             $mock->shouldReceive('backup')
                 ->andReturn(array());
+
+            $mock->shouldReceive('cleanup')->andReturn(true);
         });
 
-        $destination = \Mockery::mock('Indigo\Backup\Destination\DestinationInterface', function($mock) {
+        $destination = \Mockery::mock('Indigo\\Backup\\Destination\\DestinationInterface', function($mock) {
+            $mock->shouldReceive('save')
+                ->andReturn(true);
+        });
+
+        $logger = \Mockery::mock('Psr\\Log\\LoggerInterface', function($mock) {
             $mock->shouldReceive('save')
                 ->andReturn(true);
         });
@@ -37,6 +44,28 @@ class BackupTest extends \PHPUnit_Framework_TestCase
 
         $backup = new Backup($source, $destination);
 
+        $this->assertInstanceOf(
+            'Indigo\\Backup\\Backup',
+            $backup->addSource($source)
+        );
+
+        $this->assertInstanceOf(
+            'Indigo\\Backup\\Backup',
+            $backup->addSource($source, true)
+        );
+
+        $this->assertInstanceOf(
+            'Indigo\\Backup\\Backup',
+            $backup->addDestination($destination)
+        );
+
+        $this->assertInstanceOf(
+            'Indigo\\Backup\\Backup',
+            $backup->addDestination($destination, true)
+        );
+
         $this->assertTrue($backup->run());
+
+        $this->assertNull($backup->setLogger($logger));
     }
 }
