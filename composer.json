@@ -10,17 +10,18 @@
         }
     ],
     "require": {
+        "php": ">=5.3.3",
         "symfony/options-resolver": "v2.4.0",
         "psr/log": "~1.0"
     },
     "require-dev": {
         "indigophp/dumper": "dev-master",
-        "frenkynet/flysystem": "dev-master",
+        "league/flysystem": "dev-master",
         "mockery/mockery": "@stable"
     },
     "suggest": {
         "indigophp/dumper": "Dump databases to SQL file",
-        "frenkynet/flysystem": "Filesystem abstraction layer used for file uploads"
+        "league/flysystem": "Filesystem abstraction layer used for file uploads"
     },
     "autoload": {
         "psr-0": {"Indigo\\Backup": "src/"}

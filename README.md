@@ -24,7 +24,7 @@ Via Composer
 // See Dumper at https://github.com/indigophp/dumper
 $source = new Indigo\Backup\Source\DatabaseSource($dumper);
 
-// See Flysystem at https://github.com/FrenkyNet/Filesystem
+// See Flysystem at https://github.com/league/flysystem
 $destination = new FlysystemDestination($flysystem);
 
 $backup = new Indigo\Backup\Backup($source, $destination);
@@ -36,7 +36,7 @@ $backup->run();
 
 Current sources and destinations use the following libraries:
 
-* [FrenkyNet/Flysystem](https://github.com/FrenkyNet/Filesystem)
+* [php-loep/flysystem](https://github.com/league/flysystem)
 * [IndigoPHP/Dumper](https://github.com/indigophp/dumper)
 
 ## Testing
