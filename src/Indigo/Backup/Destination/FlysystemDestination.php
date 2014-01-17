@@ -10,7 +10,7 @@
 
 namespace Indigo\Backup\Destination;
 
-use Flysystem\Filesystem;
+use League\Flysystem\Filesystem;
 
 class FlysystemDestination extends AbstractDestination
 {

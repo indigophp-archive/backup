@@ -10,8 +10,8 @@
 
 namespace Indigo\Backup\Destination;
 
-use Flysystem\Filesystem;
-use Flysystem\Adapter\Local as Adapter;
+use League\Flysystem\Filesystem;
+use League\Flysystem\Adapter\Local as Adapter;
 
 class LocalDestination extends AbstractDestination
 {
