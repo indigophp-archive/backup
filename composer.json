@@ -2,6 +2,7 @@
     "name": "indigophp/backup",
     "description": "Backup package for different types of backups (eg. database, file, etc)",
     "license": "MIT",
+    "homepage": "http://indigophp.com",
     "keywords": ["backup"],
     "authors": [
         {
@@ -17,7 +18,7 @@
     "require-dev": {
         "indigophp/dumper": "dev-master",
         "league/flysystem": "dev-master",
-        "mockery/mockery": "@stable"
+        "mockery/mockery": "dev-master@dev"
     },
     "suggest": {
         "indigophp/dumper": "Dump databases to SQL file",
