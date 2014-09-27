@@ -6,6 +6,8 @@
 
 **Create backup from any source (files, databases, stream output, etc) and store at any destination.**
 
+# Important: This is not maintained anymore. Use [backup-manager](https://github.com/heybigname/backup-manager) instead.
+
 ## Install
 
 Via Composer
